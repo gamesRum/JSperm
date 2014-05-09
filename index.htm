@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>jsStink</title>
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	</head>
+	<body>
+		<div class='grid'>
+			<div class='cell'>
+				<h2>Javascript</h2>
+				<h3 onclick='App.runJS()'>Run</h3>
+				<textarea id='javascript'></textarea>
+			</div>
+			<div class='cell'>
+				<h2>JSON</h2>
+				<h3 onclick='App.validateJSON()'>Validate</h3>
+				<textarea id='json'></textarea>
+			</div>
+			<div class='cell'>
+				<h2>Test</h2>
+				<h3 onclick='App.testRun()'>Run</h3>
+				<textarea id='test'></textarea>
+			</div>
+			<div class='cell'>
+				<h2>Results</h2>
+				<h3 onclick='App.clearResults()'>Clear</h3>
+				<textarea id='results' disabled="disabled"></textarea>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript" src="js/script.js"></script>
+</html>
