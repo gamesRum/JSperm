@@ -24,6 +24,7 @@
 		}
 
 		.cell {
+			border-left: 1px solid #333;
 			clear: none;
 			display: block;
 			float: left;
@@ -37,43 +38,78 @@
 
 			.cell h2 {
 				background: #000;
-				font-size: 14px;
+				font-size: 12px;
 				line-height: 20px;
 				opacity: 0.9;
-				padding: 0 10px;
+				padding: 0 5px;
 				position: absolute;
 				top: 0;
 				width: 100%;
 				z-index: 999;
 			}
 
-			.cell h3 {
-				background: #444;
-				color: #000;
-				cursor: pointer;
-				font-size: 10px;
-				line-height: 20px;
-				right: 0;
-				padding: 0 10px;
+			.toolbar {
+				padding: 1px;
 				position: absolute;
+				right: 0;
 				top: 0;
 				z-index: 9999;
 			}
 
-				.cell h3:hover {
+			.toolbar button {
+				background: #444;
+				color: #000;
+				cursor: pointer;
+				float: right;
+				font-size: 10px;
+				line-height: 18px;
+				margin-left: 1px;
+				padding: 0 10px;
+			}
+
+				.toolbar button:hover {
 					background: #666;
 					color: #ccc;
 				}
 
-			.cell textarea {
+			.cell textarea,
+			.cell .log {
 				background: #220;
 				color: #ccc;
 				font-family: "Lucida Console", Monaco, monospace;
-				height: calc(100% - 21px);
+				height: calc(100% - 20px);
 				left: 0;
 				top: 20px;
 				padding: 5px;
 				position: absolute;
 				resize: none;
-				width: calc(100% - 1px);
+				width: 100%;
 			}
+
+				.log {
+					overflow: auto;
+				}
+
+				.log blockquote {
+					border-bottom: 1px dotted #333;
+					color: #999;
+					font-size: 10px;
+					padding: 5px 0 15px 0;
+					position: relative;
+				}
+
+					.log .error {
+						color: #966;
+					}
+
+					.log blockquote:hover {
+						color: #ccc;
+					}
+
+					.log span {
+						bottom: 1px;
+						color: #444;
+						font-size: 8px;
+						position: absolute;
+						right: 0;
+					}
