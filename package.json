@@ -1,0 +1,39 @@
+{
+  "name": "jsperm",
+  "version": "0.0.1",
+  "main": "lib/jsperm.js",
+  "description": "Ejaculating code",
+  "homepage": "",
+  "bugs": "",
+  "author": {
+    "name": "",
+    "email": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "license": "MIT",
+  "files": [
+    "lib"
+  ],
+  "keywords": [],
+  "devDependencies": {
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-nodeunit": "^0.3.3",
+    "grunt-contrib-watch": "^0.6.1",
+    "load-grunt-tasks": "^0.4.0",
+    "time-grunt": "^0.3.1",
+    "jshint-stylish": "^0.2.0",
+    "grunt-mocha-test": "~0.10.2"
+  },
+  "scripts": {
+    "test": "grunt"
+  },
+  "dependencies": {
+    "express": "~4.1.2",
+    "morgan": "~1.0.1",
+    "mocha": "~1.18.2",
+    "chai": "~1.9.1"
+  }
+}
