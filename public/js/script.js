@@ -2,18 +2,22 @@
 	"use strict";
 
 	$.ready = function() {
+
 		window.App = {
-			values: {
+			panes: {
 				javascript: $('#javascript')[0],
 				test: $('#test')[0],
 				json: $('#json')[0],
 				results: $('#results')[0]
 			},
+			editors: {
+				javascript: null
+			},
 			getTimeStamp: function() {
 				return new Date().toLocaleString();
 			},
 			log: function(message, className) {
-				var logContainer = $(this.values.results);
+				var logContainer = $(this.panes.results);
 
 				if(!message) {
 					message = "\n";
@@ -38,7 +42,7 @@
 				this.log(message, 'warn');
 			},
 			runJS: function() {
-				var source = this.values.javascript.value;
+				var source = this.editors.javascript.getValue();
 
 				try {
 					this.log('[EXEC] ' + JSON.stringify(eval(source)));
@@ -47,7 +51,7 @@
 				}
 			},
 			runBenchmark: function() {
-				var source = this.values.javascript.value;
+				var source = this.editors.javascript.getValue();
 
 				try {
 					this.log('[BNCH] run!.');
@@ -56,7 +60,7 @@
 				}
 			},
 			testRun: function() {
-				var source = this.values.test.value;
+				var source = this.editors.test.getValue();
 
 				try {
 					this.log('[JSON] ' + JSON.stringify(source));
@@ -65,7 +69,7 @@
 				}
 			},
 			validateJSON: function() {
-				var source = this.values.json.value;
+				var source = this.editors.json.getValue();
 
 				try {
 					this.log('[JSON] ' + JSON.stringify(JSON.parse(source)));
@@ -114,7 +118,7 @@
 					dataType: 'html'
 				})
 					.success(function(data){
-						self.values.javascript.value = data;
+						self.editors.javascript.setValue(data);
 					})
 					.fail(function() {
 						self.log('Error loading javascript file!');
@@ -125,7 +129,7 @@
 					dataType: 'html'
 				})
 					.success(function(data){
-						self.values.json.value = data;
+						self.editors.json.setValue(data);
 					})
 					.fail(function() {
 						self.log('Error loading json file!');
@@ -136,13 +140,37 @@
 					dataType: 'html'
 				})
 					.success(function(data){
-						self.values.test.value = data;
+						self.editors.test.setValue(data);
 					})
 					.fail(function() {
 						self.log('Error loading test file!');
 					});
 			},
 			init: function() {
+				this.editors.javascript = CodeMirror.fromTextArea(this.panes.javascript, {
+				    lineNumbers: true,
+    				mode: "javascript",
+					styleActiveLine: true,
+					matchBrackets: true,
+					theme: 'mbo'
+				});
+
+				this.editors.json = CodeMirror.fromTextArea(this.panes.json, {
+				    lineNumbers: true,
+    				mode: "javascript",
+					styleActiveLine: true,
+					matchBrackets: true,
+					theme: 'mbo'
+				});
+
+				this.editors.test = CodeMirror.fromTextArea(this.panes.test, {
+				    lineNumbers: true,
+    				mode: "javascript",
+					styleActiveLine: true,
+					matchBrackets: true,
+					theme: 'mbo'
+				});
+
 				this.load('start');
 			}
 		};
