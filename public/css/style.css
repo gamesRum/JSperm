@@ -57,8 +57,8 @@
 			}
 
 			.toolbar button {
-				background: #444;
-				color: #000;
+				background: #1e1e1e;
+				color: #666;
 				cursor: pointer;
 				float: right;
 				font-size: 10px;
@@ -68,13 +68,13 @@
 			}
 
 				.toolbar button:hover {
-					background: #666;
-					color: #ccc;
+					background: #505050;
+					color: #999;
 				}
 
 			.cell textarea,
 			.cell .log {
-				background: #220;
+				background: #191919;
 				color: #ccc;
 				font-family: "Lucida Console", Monaco, monospace;
 				height: calc(100% - 20px);
