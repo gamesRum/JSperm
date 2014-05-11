@@ -4,6 +4,5 @@
   "dependencies" : {
   	"codemirror": "latest",
     "jquery" : "latest"
-  },
-  "directory": "public/components/"
+  }
 }
