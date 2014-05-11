@@ -4,13 +4,13 @@
 	$sandboxDirectory = '../../sandbox/';
 	$result = [
 			'status'  => false,
-			'message' => 'ERROR: invalid call!'
+			'message' => 'Invalid call!'
 		];
 
 	if(file_exists($serviceFile)) {
 		include($serviceFile);
 	} else {
-		$result['status'] = 'ERROR: service not found! ['.$service.']';
+		$result['status'] = 'service not found! ['.$service.']';
 	}
 
 	header('Content-type: application/json');

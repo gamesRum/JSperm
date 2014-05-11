@@ -1,5 +1,4 @@
 <?php
-	$result['status'] = false;
 	$result['message'] = 'Unknown error!';
 
 	$projectName = isset($_POST['project'])?$_POST['project']:null;

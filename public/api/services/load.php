@@ -1,9 +1,7 @@
 <?php
-	$result['status'] = true;
 	$result['message'] = 'Unknown error!';
 
 	$projectName = isset($_POST['project'])?$_POST['project']:null;
-	$files = isset($_POST['files'])?$_POST['files']:null;
 
 	if($projectName) {
 		$projectDirectory = $sandboxDirectory.$projectName.'/';

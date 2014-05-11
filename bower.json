@@ -1,0 +1,9 @@
+{
+  "name" : "jsperm",
+  "version": "0.1",
+  "dependencies" : {
+  	"codemirror": "latest",
+    "jquery" : "latest"
+  },
+  "directory": "public/components/"
+}

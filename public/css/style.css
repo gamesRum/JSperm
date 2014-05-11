@@ -2,6 +2,7 @@
 	border: 0;
 	box-sizing: border-box;
 	margin: 0;
+	outline: 0;
 	padding: 0;
 }
 
@@ -19,8 +20,7 @@
 
 		.menubar {
 			background: #333;
-			color: #fff;
-			font-weight: bold;
+			font-size: 12px;
 			height: 20px;
 			line-height: 20px;
 			left: 0;
@@ -33,30 +33,52 @@
 		}
 
 			.menubar input {
-				background: #333;
-				border: 0;
+				background: #222;
 				color: #fff;
 				font-family: Helvetica, Arial, Sans-serif;
-				font-size: 16px;
-				height: 18px;
-				left: 1px;
+				font-size: 12px;
+				height: 16px;
+				line-height: 19px;
 				margin-bottom: 2px;
-				padding: 0 2px;
-				position: absolute;
-				top: 1px;
+				padding: 0 4px;
 				width: 200px;
 			}
 
+				::-webkit-input-placeholder {
+				   color: #444;
+				}
+
+			.menubar .title {
+				color: #fff;
+				font-size: 16px;
+				font-weight: bold;
+				padding: 0 30px 0 2px;
+			}
+
 			.menubar .toolbar {
-				padding: 0!important;
+				padding: 1px!important;
 			}
 
 			.menubar .toolbar button {
 				float:left!important;
 			}
 
+		.statusbar {
+			background: #333;
+			bottom: 0;
+			color: #666;
+			font-size: 12px;
+			height: 20px;
+			left: 0;
+			line-height: 20px;
+			padding: 0 2px;
+			position: absolute;
+			width: 100%;
+		}
+
 		.grid {
 			height: 100%;
+			padding-bottom: 20px;
 			padding-top:20px;
 			position: relative;
 			width: 100%;
@@ -139,6 +161,12 @@
 					position: relative;
 				}
 
+					.log .code {
+						color: #555;
+						padding-left: 42px;
+						white-space: pre-wrap;
+					}
+
 					.log .error {
 						color: #966;
 					}
@@ -154,3 +182,51 @@
 						position: absolute;
 						right: 0;
 					}
+
+		.overlay {
+			background: rgba(64,64,64,0.7);
+			height: 100%;
+			left: 0;
+			position: absolute;
+			top: 0;
+			width: 100%;
+			z-index: 99999;
+		}
+
+			.dialog {
+				background: #dedede;
+				box-shadow: 0 0 5px #000;
+				max-height: 50%;
+				margin: 15% 25%;
+				width: 50%;
+			}
+
+				.dialog .title {
+					background: #000;
+					color: #fff;
+					font-size: 18px;
+					font-weight: bold;
+					line-height: 40px;
+					padding: 0 20px;
+				}
+
+				.dialog input {
+					font-size: 14px;
+					line-height: 20px;
+					margin-bottom: 10px;
+					padding: 0 2px;
+				}
+
+					.dialog ::-webkit-input-placeholder {
+					   color: #ccc;
+					}
+
+				.dialog .wide {
+					clear: both;
+					width: 100%;
+				}
+
+				.dialog .container {
+					color: #666;
+					padding: 20px;
+				}

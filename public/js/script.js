@@ -8,17 +8,21 @@
 				javascript: $('#javascript')[0],
 				test: $('#test')[0],
 				json: $('#json')[0],
-				results: $('#results')[0]
+				results: $('#results')[0],
+				status: $('#status')[0]
 			},
+
 			editors: {
 				javascript: null,
 				test: null,
 				json: null,
 				name: null
 			},
+
 			getTimeStamp: function() {
 				return new Date().toLocaleString();
 			},
+
 			log: function(message, className) {
 				var logContainer = $(this.panes.results);
 
@@ -28,83 +32,119 @@
 
 				if(!className) {
 					className = '';
+				} else {
+					className = 'class="' + className + '"';
 				}
 
-				console.log(className);
-
 				message = message + '<span>' + this.getTimeStamp() + '</span> ';
-				message = '<blockquote class="' + className + '">' + message + '</blockquote>';
+				message = '<blockquote ' + className + '>' + message + '</blockquote>';
 
 				logContainer.append(message);
 				logContainer.scrollTop(logContainer.prop("scrollHeight"));
 			},
+
 			error: function(message) {
 				this.log(message, 'error');
 			},
+
 			warn: function(message) {
 				this.log(message, 'warn');
 			},
+
+			setStatus: function(message) {
+				console.log(this.panes.status);
+				this.panes.status.innerHTML = message;
+			},
+
 			saveAll: function() {
 				var self = this;
 
-				$.ajax({
-					type: "POST",
-					url: 'api/save',
-					data: {
-						project: self.editors.name.value,
-						files: {
-							'javascript.js': self.editors.javascript.getValue(),
-							'test.js': self.editors.test.getValue(),
-							'data.json': self.editors.json.getValue()
-						}
-					},
-					success: function(data){
-						console.log(data);
-					},
-					dataType: 'JSON'
-				});
+				if(self.editors.name.value) {
+					$.ajax({
+						type: "POST",
+						url: 'api/save',
+						data: {
+							project: self.editors.name.value,
+							files: {
+								'javascript.js': self.editors.javascript.getValue(),
+								'test.js': self.editors.test.getValue(),
+								'data.json': self.editors.json.getValue()
+							}
+						},
+						dataType: 'JSON'
+					});
+				} else {
+					this.setStatus('ERROR: Cannot save unnamed project ');
+				}
 			},
+
 			loadAll: function() {
+				var self = this;
+
+				if(self.editors.name.value) {
+					$.ajax({
+						type: "POST",
+						url: 'api/load',
+						data: {
+							project: self.editors.name.value
+						},
+						success: function(data){
+							if(data.status) {
+								self.editors.name.value = data.name;
+								self.editors.javascript.setValue(data.files['javascript.js']);
+								self.editors.test.setValue(data.files['test.js']);
+								self.editors.json.setValue(data.files['data.json']);
+								self.log('[LOAD] ' + data.message);
+								self.setStatus('Project loaded!');
+							} else {
+								self.setStatus('ERROR: ' + data.message + ' [' + self.editors.name.value + '].');
+							}
+						},
+						dataType: 'JSON'
+					}).fail(function(data) {
+						self.setStatus('ERROR: Cannot open project [' + self.editors.name.value + '].');
+					});
+				} else {
+					this.setStatus('ERROR: Cannot open an empty project.');
+				}
+			},
+
+			runJS: function() {
 				var self = this;
 
 				$.ajax({
 					type: "POST",
-					url: 'api/load',
+					url: 'api/execute',
 					data: {
 						project: self.editors.name.value
 					},
 					success: function(data){
+						var log = '';
 						self.editors.name.value = data.name;
-						self.editors.javascript.setValue(data.files['javascript.js']);
-						self.editors.test.setValue(data.files['test.js']);
-						self.editors.json.setValue(data.files['data.json']);
-					},
-					error: function(data) {
-						console.log(JSON.Parse(data.responseText));
+
+						for(var key in data.response) {
+							if (data.response.hasOwnProperty(key)) {
+								var output = data.response[key].output,
+									profiling = data.response[key].profiling,
+									exitCode = data.response[key].exit?'error':'';
+
+								log += '<br />[EXEC] ' + key;
+								log += '<div class="code ' + exitCode + '">';
+
+								if(typeof output === 'string' && output.length) {
+									log += output;
+								}
+
+								log += '</div>';
+							}
+						}
+
+						self.log(log);
 					},
 					dataType: 'JSON'
 				});
 			},
-			runJS: function() {
-				var source = this.editors.javascript.getValue();
 
-				this.saveAll();
-
-				try {
-					this.log('[EXEC] ' + JSON.stringify(eval(source)));
-				} catch (e) {
-					this.error('[EXEC] ' + e.message);
-				}
-			},
-			runBenchmark: function() {
-				var source = this.editors.javascript.getValue();
-
-				try {
-					this.log('[BNCH] run!.');
-				} catch (e) {
-					this.error('[BNCH] ' + e.message);
-				}
-			},
 			testRun: function() {
 				var source = this.editors.test.getValue();
 
@@ -114,6 +154,7 @@
 					this.error('[TEST] ' + e.message);
 				}
 			},
+
 			validateJSON: function() {
 				var source = this.editors.json.getValue();
 
@@ -123,9 +164,11 @@
 					this.error('[JSON] ' + e.message);
 				}
 			},
+
 			clearResults: function() {
-				$('#results')[0].value = '';
+				this.panes.results.innerHTML = '';
 			},
+
 			runTest: function(testFunction, silent) {
 			    for(var index = 0; index < testCases.length; index++) {
 			        var ip = testCases[index],
@@ -142,6 +185,7 @@
 			        }
 			    }
 			},
+
 			benchmark: function(method) {
 			  var author = null,
 			      start = +(new Date);
@@ -153,12 +197,13 @@
 			    callback && callback(start, end, { ms: difference });
 			  });
 			},
+
 			clock: function(start, end, difference) {
 			    console.log('[' + author + '] ' + difference.ms + 'ms!');
 			},
+
 			init: function() {
 				this.editors.name = $('#projectName')[0];
-				console.log(this.editors.name);
 
 				this.editors.javascript = CodeMirror.fromTextArea(this.panes.javascript, {
 				    lineNumbers: true,
