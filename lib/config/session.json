@@ -1,0 +1,7 @@
+{
+  "secret": "ULTRA SECRET KEY GOES HERE",
+  "key": "jsperm.sid",
+  "cookie": {
+    "maxAge": 60000
+  }
+}

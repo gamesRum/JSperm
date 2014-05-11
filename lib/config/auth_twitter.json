@@ -1,0 +1,5 @@
+{
+  "consumerKey": "AYIQCTNy0sVIfpzBL1uHyLYyF",
+  "consumerSecret": "2gjWQs74vsQ9hVd9aehKvF2oKbFvTt28xxE1ielXVKuuYrrQeF",
+  "callbackURL": "http://jsperm.dev:8080/auth/twitter/callback"
+}

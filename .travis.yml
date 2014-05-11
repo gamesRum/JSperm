@@ -1,4 +1,7 @@
 language: node_js
+addons:
+  hosts:
+    - jsperm.dev
 node_js:
   - '0.10'
 before_script:
