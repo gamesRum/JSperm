@@ -12,12 +12,15 @@
 		<script src="js/codemirror/addon/edit/matchbrackets.js"></script>
 	</head>
 	<body>
+		<div class="menubar toolbar">
+			<input id="projectName" value="sample" placeholder="project name"/>
+			<button onclick="App.loadAll()">Load</button>
+			<button onclick="App.saveAll()">Save</button>
+			<button onclick="App.runJS()">Execute</button>
+			<button onclick="App.runBenchmark()">Benchmark</button>
+		</div>
 		<div class="grid">
 			<div class="cell">
-				<div class="toolbar">
-					<button onclick="App.runJS()">Execute</button>
-					<button onclick="App.runBenchmark()">Benchmark</button>
-				</div>
 				<h2>Javascript</h2>
 				<textarea id="javascript"></textarea>
 			</div>

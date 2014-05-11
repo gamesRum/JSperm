@@ -17,8 +17,47 @@
 			font-size: 14px;
 		}
 
+		.menubar {
+			background: #333;
+			color: #fff;
+			font-weight: bold;
+			height: 20px;
+			line-height: 20px;
+			left: 0;
+			overflow: hidden;
+			padding: 0;
+			position: absolute;
+			top: 0;
+			width: 100%;
+			z-index: 9999;
+		}
+
+			.menubar input {
+				background: #333;
+				border: 0;
+				color: #fff;
+				font-family: Helvetica, Arial, Sans-serif;
+				font-size: 16px;
+				height: 18px;
+				left: 1px;
+				margin-bottom: 2px;
+				padding: 0 2px;
+				position: absolute;
+				top: 1px;
+				width: 200px;
+			}
+
+			.menubar .toolbar {
+				padding: 0!important;
+			}
+
+			.menubar .toolbar button {
+				float:left!important;
+			}
+
 		.grid {
 			height: 100%;
+			padding-top:20px;
 			position: relative;
 			width: 100%;
 		}
@@ -49,6 +88,7 @@
 			}
 
 			.toolbar {
+				height: 20px;
 				padding: 1px;
 				position: absolute;
 				right: 0;

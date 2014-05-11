@@ -11,7 +11,10 @@
 				results: $('#results')[0]
 			},
 			editors: {
-				javascript: null
+				javascript: null,
+				test: null,
+				json: null,
+				name: null
 			},
 			getTimeStamp: function() {
 				return new Date().toLocaleString();
@@ -41,8 +44,51 @@
 			warn: function(message) {
 				this.log(message, 'warn');
 			},
+			saveAll: function() {
+				var self = this;
+
+				$.ajax({
+					type: "POST",
+					url: 'api/save',
+					data: {
+						project: self.editors.name.value,
+						files: {
+							'javascript.js': self.editors.javascript.getValue(),
+							'test.js': self.editors.test.getValue(),
+							'data.json': self.editors.json.getValue()
+						}
+					},
+					success: function(data){
+						console.log(data);
+					},
+					dataType: 'JSON'
+				});
+			},
+			loadAll: function() {
+				var self = this;
+
+				$.ajax({
+					type: "POST",
+					url: 'api/load',
+					data: {
+						project: self.editors.name.value
+					},
+					success: function(data){
+						self.editors.name.value = data.name;
+						self.editors.javascript.setValue(data.files['javascript.js']);
+						self.editors.test.setValue(data.files['test.js']);
+						self.editors.json.setValue(data.files['data.json']);
+					},
+					error: function(data) {
+						console.log(JSON.Parse(data.responseText));
+					},
+					dataType: 'JSON'
+				});
+			},
 			runJS: function() {
 				var source = this.editors.javascript.getValue();
+
+				this.saveAll();
 
 				try {
 					this.log('[EXEC] ' + JSON.stringify(eval(source)));
@@ -110,43 +156,10 @@
 			clock: function(start, end, difference) {
 			    console.log('[' + author + '] ' + difference.ms + 'ms!');
 			},
-			load: function(name) {
-				var self = this;
-
-				$.ajax({
-					url:'samples/' + name + '/javascript.js',
-					dataType: 'html'
-				})
-					.success(function(data){
-						self.editors.javascript.setValue(data);
-					})
-					.fail(function() {
-						self.log('Error loading javascript file!');
-					});
-
-				$.ajax({
-					url:'samples/' + name + '/json.json',
-					dataType: 'html'
-				})
-					.success(function(data){
-						self.editors.json.setValue(data);
-					})
-					.fail(function() {
-						self.log('Error loading json file!');
-					});
-
-				$.ajax({
-					url:'samples/' + name + '/test.js',
-					dataType: 'html'
-				})
-					.success(function(data){
-						self.editors.test.setValue(data);
-					})
-					.fail(function() {
-						self.log('Error loading test file!');
-					});
-			},
 			init: function() {
+				this.editors.name = $('#projectName')[0];
+				console.log(this.editors.name);
+
 				this.editors.javascript = CodeMirror.fromTextArea(this.panes.javascript, {
 				    lineNumbers: true,
     				mode: "javascript",
@@ -171,7 +184,7 @@
 					theme: 'mbo'
 				});
 
-				this.load('start');
+				this.loadAll();
 			}
 		};
 

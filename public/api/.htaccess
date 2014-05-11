@@ -1,0 +1,17 @@
+Options +FollowSymLinks
+php_flag display_startup_errors on
+php_flag display_errors on
+php_flag html_errors on
+DirectorySlash Off
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php?service=$1
+
+<IfModule mod_deflate.c>
+    <FilesMatch "\.(js|jpg|jpeg|gif|png|css|txt|html)$">
+        ExpiresActive on
+        ExpiresDefault "access plus 1 day"
+        SetOutputFilter DEFLATE
+    </FilesMatch>
+</IfModule>
