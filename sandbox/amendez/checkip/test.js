@@ -1,4 +1,3 @@
-
 console.log('\n\nBenchmark: ');
 
 console.log('Remix:');

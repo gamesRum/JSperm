@@ -9,14 +9,19 @@
 				test: $('#test')[0],
 				json: $('#json')[0],
 				results: $('#results')[0],
-				status: $('#status')[0]
+				status: $('#status')[0],
+				loginError: $('#loginError')[0],
+				overlay: $('#overlay')[0],
+				projects: $('#projects')[0]
 			},
 
 			editors: {
 				javascript: null,
 				test: null,
 				json: null,
-				name: null
+				name: null,
+				username: null,
+				password: null
 			},
 
 			getTimeStamp: function() {
@@ -52,75 +57,119 @@
 			},
 
 			setStatus: function(message) {
-				console.log(this.panes.status);
 				this.panes.status.innerHTML = message;
 			},
 
-			saveAll: function() {
-				var self = this;
+			login: function() {
+				var username = App.editors.username.value,
+					password = App.editors.password.value,
+					self = this;
 
-				if(self.editors.name.value) {
+				App.panes.loginError.innerHTML= '';
+
+				if(username, password) {
 					$.ajax({
 						type: "POST",
-						url: 'api/save',
+						url: 'api/login',
 						data: {
-							project: self.editors.name.value,
-							files: {
-								'javascript.js': self.editors.javascript.getValue(),
-								'test.js': self.editors.test.getValue(),
-								'data.json': self.editors.json.getValue()
-							}
+							username: username,
+							password: password
 						},
 						dataType: 'JSON'
+					}).success(function(data){
+						if(data.status) {
+							var newProjects = '';
+
+							for(var index in data.projects) {
+								newProjects += '<span class="link">' + data.projects[index] + '</span>';
+							}
+
+							App.panes.projects.innerHTML = newProjects;
+							$('#projects span').on('click', App.loadAll);
+
+							App.loadProjects();
+						} else {
+							App.editors.password.value = '';
+							App.panes.loginError.innerHTML= data.message;
+						}
+					}).fail(function(data, response){
+						self.panes.loginError.innerHTML(data.message);
 					});
 				} else {
 					this.setStatus('ERROR: Cannot save unnamed project ');
 				}
+				return false;
 			},
 
-			loadAll: function() {
-				var self = this;
+			loadProjects: function() {
+				$(this.panes.overlay).fadeOut();
+			},
 
-				if(self.editors.name.value) {
+			saveAll: function() {
+				if(App.editors.name.value) {
+					$.ajax({
+						type: "POST",
+						url: 'api/save',
+						data: {
+							username: App.editors.username.value,
+							project: App.editors.name.value,
+							files: {
+								'javascript.js': App.editors.javascript.getValue(),
+								'test.js': App.editors.test.getValue(),
+								'data.json': App.editors.json.getValue()
+							}
+						},
+						dataType: 'JSON'
+					});
+				} else {
+					App.setStatus('ERROR: Cannot save unnamed project ');
+				}
+			},
+
+			loadAll: function(event) {
+				App.editors.name.value = event.target.innerHTML;
+				$('#projects').slideUp();
+
+				if(App.editors.name.value) {
 					$.ajax({
 						type: "POST",
 						url: 'api/load',
 						data: {
-							project: self.editors.name.value
+							username: App.editors.username.value,
+							project: App.editors.name.value
 						},
 						success: function(data){
 							if(data.status) {
-								self.editors.name.value = data.name;
-								self.editors.javascript.setValue(data.files['javascript.js']);
-								self.editors.test.setValue(data.files['test.js']);
-								self.editors.json.setValue(data.files['data.json']);
-								self.log('[LOAD] ' + data.message);
-								self.setStatus('Project loaded!');
+								App.editors.name.value = data.name;
+								App.editors.javascript.setValue(data.files['javascript.js']);
+								App.editors.test.setValue(data.files['test.js']);
+								App.editors.json.setValue(data.files['data.json']);
+								App.log('[LOAD] ' + data.message);
+								App.setStatus('Project loaded!');
 							} else {
-								self.setStatus('ERROR: ' + data.message + ' [' + self.editors.name.value + '].');
+								App.setStatus('ERROR: ' + data.message + ' [' + App.editors.name.value + '].');
 							}
 						},
 						dataType: 'JSON'
 					}).fail(function(data) {
-						self.setStatus('ERROR: Cannot open project [' + self.editors.name.value + '].');
+						App.setStatus('ERROR: Cannot open project [' + App.editors.name.value + '].');
 					});
 				} else {
-					this.setStatus('ERROR: Cannot open an empty project.');
+					App.setStatus('ERROR: Cannot open an empty project.');
 				}
 			},
 
 			runJS: function() {
-				var self = this;
-
 				$.ajax({
 					type: "POST",
 					url: 'api/execute',
 					data: {
-						project: self.editors.name.value
+						username: App.editors.username.value,
+						project: App.editors.name.value
 					},
 					success: function(data){
 						var log = '';
-						self.editors.name.value = data.name;
+						App.editors.name.value = data.name;
 
 						for(var key in data.response) {
 							if (data.response.hasOwnProperty(key)) {
@@ -139,34 +188,34 @@
 							}
 						}
 
-						self.log(log);
+						App.log(log);
 					},
 					dataType: 'JSON'
 				});
 			},
 
 			testRun: function() {
-				var source = this.editors.test.getValue();
+				var source = App.editors.test.getValue();
 
 				try {
-					this.log('[JSON] ' + JSON.stringify(source));
+					App.log('[JSON] ' + JSON.stringify(source));
 				} catch (e) {
-					this.error('[TEST] ' + e.message);
+					App.error('[TEST] ' + e.message);
 				}
 			},
 
 			validateJSON: function() {
-				var source = this.editors.json.getValue();
+				var source = App.editors.json.getValue();
 
 				try {
-					this.log('[JSON] ' + JSON.stringify(JSON.parse(source)));
+					App.log('[JSON] ' + JSON.stringify(JSON.parse(source)));
 				} catch (e) {
-					this.error('[JSON] ' + e.message);
+					App.error('[JSON] ' + e.message);
 				}
 			},
 
 			clearResults: function() {
-				this.panes.results.innerHTML = '';
+				App.panes.results.innerHTML = '';
 			},
 
 			runTest: function(testFunction, silent) {
@@ -203,14 +252,24 @@
 			},
 
 			init: function() {
-				this.editors.name = $('#projectName')[0];
+				this.editors.name = $('#project')[0];
+				this.editors.username = $('#username')[0];
+				this.editors.password = $('#password')[0];
+				this.panes.loginError = $('#loginError')[0];
+
+				this.editors.username.focus();
+
+				$('#loginForm').on('submit', App.login);
+				$('#projectsButton').on('click', function(){
+					$('#projects').slideToggle();
+				});
 
 				this.editors.javascript = CodeMirror.fromTextArea(this.panes.javascript, {
 				    lineNumbers: true,
     				mode: "javascript",
 					styleActiveLine: true,
 					matchBrackets: true,
-					theme: 'mbo'
+					theme: 'phoenix'
 				});
 
 				this.editors.json = CodeMirror.fromTextArea(this.panes.json, {
@@ -218,7 +277,7 @@
     				mode: "javascript",
 					styleActiveLine: true,
 					matchBrackets: true,
-					theme: 'mbo'
+					theme: 'phoenix'
 				});
 
 				this.editors.test = CodeMirror.fromTextArea(this.panes.test, {
@@ -226,10 +285,8 @@
     				mode: "javascript",
 					styleActiveLine: true,
 					matchBrackets: true,
-					theme: 'mbo'
+					theme: 'phoenix'
 				});
-
-				this.loadAll();
 			}
 		};
 

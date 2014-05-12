@@ -1,6 +1,6 @@
 /* Based on mbonaci's Brackets mbo theme */
 
-.cm-s-phoenix.CodeMirror {background: #191919; color: #AAA; line-height: 12px;}
+.cm-s-phoenix.CodeMirror {background: #191919; color: #AAA; font-size:10px; line-height: 12px; height: 100%;}
 .cm-s-phoenix div.CodeMirror-selected {background: #333 !important;}
 .cm-s-phoenix .CodeMirror-gutters {background: #111; border: 0; padding-right: 10px;}
 .cm-s-phoenix .CodeMirror-linenumber {color: #555;}

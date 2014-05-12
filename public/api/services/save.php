@@ -1,11 +1,12 @@
 <?php
 	$result['message'] = 'Unknown error!';
 
+	$userName = isset($_POST['username'])?$_POST['username']:null;
 	$projectName = isset($_POST['project'])?$_POST['project']:null;
 	$files = isset($_POST['files'])?$_POST['files']:null;
 
 	if($files && $projectName) {
-		$projectDirectory = $sandboxDirectory.$projectName.'/';
+		$projectDirectory = $sandboxDirectory.$userName.'/'.$projectName.'/';
 		$directoryExists = false;
 
 
