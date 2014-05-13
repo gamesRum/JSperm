@@ -9,7 +9,7 @@
 				test: $('#test')[0],
 				json: $('#json')[0],
 				results: $('#results')[0],
-				status: $('#status')[0],
+				status: $('#popup')[0],
 				loginError: $('#loginError')[0],
 				overlay: $('#overlay')[0],
 				projects: $('#projects')[0]
@@ -58,6 +58,10 @@
 
 			setStatus: function(message) {
 				this.panes.status.innerHTML = message;
+				$(this.panes.status).fadeIn();
+				setTimeout(function(){
+					$(App.panes.status).fadeOut();
+				}, 5000);
 			},
 
 			login: function() {
@@ -127,8 +131,11 @@
 			},
 
 			loadAll: function(event) {
-				App.editors.name.value = event.target.innerHTML;
 				$('#projects').slideUp();
+
+				if(event) {
+					App.editors.name.value = event.target.innerHTML;
+				}
 
 				if(App.editors.name.value) {
 					$.ajax({
@@ -160,38 +167,42 @@
 			},
 
 			runJS: function() {
-				$.ajax({
-					type: "POST",
-					url: 'api/execute',
-					data: {
-						username: App.editors.username.value,
-						project: App.editors.name.value
-					},
-					success: function(data){
-						var log = '';
-						App.editors.name.value = data.name;
+				if(App.editors.name.value) {
+					$.ajax({
+						type: "POST",
+						url: 'api/execute',
+						data: {
+							username: App.editors.username.value,
+							project: App.editors.name.value
+						},
+						success: function(data){
+							var log = '';
+							App.editors.name.value = data.name;
 
-						for(var key in data.response) {
-							if (data.response.hasOwnProperty(key)) {
-								var output = data.response[key].output,
-									profiling = data.response[key].profiling,
-									exitCode = data.response[key].exit?'error':'';
+							for(var key in data.response) {
+								if (data.response.hasOwnProperty(key)) {
+									var output = data.response[key].output,
+										profiling = data.response[key].profiling,
+										exitCode = data.response[key].exit?'error':'';
 
-								log += '<br />[EXEC] ' + key;
-								log += '<div class="code ' + exitCode + '">';
+									log += '<br />[EXEC] ' + key;
+									log += '<div class="code ' + exitCode + '">';
 
-								if(typeof output === 'string' && output.length) {
-									log += output;
+									if(typeof output === 'string' && output.length) {
+										log += output;
+									}
+
+									log += '</div>';
 								}
-
-								log += '</div>';
 							}
-						}
 
-						App.log(log);
-					},
-					dataType: 'JSON'
-				});
+							App.log(log);
+						},
+						dataType: 'JSON'
+					});
+				} else {
+					App.setStatus('ERROR: Nothing to be run here!');
+				}
 			},
 
 			testRun: function() {
@@ -260,6 +271,9 @@
 				this.editors.username.focus();
 
 				$('#loginForm').on('submit', App.login);
+				$('#popup').on('click', function(){
+					$(App.panes.status).fadeOut();
+				});
 				$('#projectsButton').on('click', function(){
 					$('#projects').slideToggle();
 				});

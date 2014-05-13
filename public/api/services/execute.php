@@ -23,9 +23,9 @@
 
 						$result['response'][$entry]['output'] = htmlentities(ob_get_clean());
 						$result['response'][$entry]['exit'] = $exitCode;
-						$result['response'][$entry]['memory'] = 0.00;
-						$result['response'][$entry]['cpu'] = 0.00;
-						$result['response'][$entry]['time'] = 0.00;
+						$result['response'][$entry]['memory'] = 0;
+						$result['response'][$entry]['cpu'] = 0;
+						$result['response'][$entry]['time'] = 0;
 					}
 				}
 

@@ -18,6 +18,25 @@
 			font-size: 14px;
 		}
 
+		.popup {
+			background: #690;
+			border-radius: 0 0 5px 5px;
+			box-shadow: 0 0 10px #000;
+			color: #fff;
+			cursor: pointer;
+			display: none;
+			height: 30px;
+			left: 25%;
+			line-height: 30px;
+			margin: 0 auto;
+			padding: 0 5px;
+			position: fixed;
+			text-align: center;
+			top: 20px;
+			width: 50%;
+			z-index: 119999;
+		}
+
 		.link {
 			color: #65910f;
 			cursor: pointer;
@@ -72,19 +91,6 @@
 				float:left!important;
 			}
 
-		.statusbar {
-			background: #333;
-			bottom: 0;
-			color: #666;
-			font-size: 12px;
-			height: 20px;
-			left: 0;
-			line-height: 20px;
-			padding: 0 2px;
-			position: absolute;
-			width: 100%;
-		}
-
 		.dropdown {
 			display: block;
 			height: 20px;
@@ -130,7 +136,6 @@
 
 		.grid {
 			height: 100%;
-			padding-bottom: 20px;
 			padding-top:20px;
 			position: relative;
 			width: 100%;
