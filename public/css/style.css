@@ -92,6 +92,12 @@
 				float:left!important;
 			}
 
+			.menubar .toolbar .profile {
+				background: url('') right center no-repeat;
+				padding-right: 25px;
+				position: relative;
+			}
+
 		.dropdown {
 			display: block;
 			height: 20px;
@@ -252,7 +258,7 @@
 		}
 
 			.dialog {
-				background: #dedede;
+				background: #dedede url('../img/icon.png') -180px top no-repeat;
 				box-shadow: 0 0 15px #000;
 				display: none;
 				max-height: 50%;
@@ -261,7 +267,6 @@
 			}
 
 				.login {
-					background: #dedede url('../img/icon.png') right center no-repeat;
 					display: block;
 				}
 
@@ -275,8 +280,7 @@
 				}
 
 					.dialog form {
-						color: #888;
-						margin: 0 10px;
+						margin: 0 auto;
 						max-width: 300px;
 					}
 

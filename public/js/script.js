@@ -11,17 +11,24 @@
 				results: $('#results')[0],
 				status: $('#popup')[0],
 				loginError: $('#loginError')[0],
+				registerError: $('#registerError')[0],
 				overlay: $('#overlay')[0],
-				projects: $('#projects')[0]
+				projects: $('#projects')[0],
+				profileIcon: $('#profileIcon')[0]
 			},
 
 			editors: {
 				javascript: null,
 				test: null,
 				json: null,
-				name: null,
-				username: null,
-				password: null
+				name: $('#project')[0],
+				username: $('#username')[0],
+				password: $('#password')[0],
+				newusername: $('#newusername')[0],
+				newpassword: $('#newpassword')[0],
+				newemail: $('#newemail')[0],
+				newname: $('#newname')[0],
+				newdescription: $('#newdescription')[0]
 			},
 
 			getTimeStamp: function() {
@@ -29,7 +36,7 @@
 			},
 
 			log: function(message, className) {
-				var logContainer = $(this.panes.results);
+				var logContainer = $(App.panes.results);
 
 				if(!message) {
 					message = "\n";
@@ -41,7 +48,7 @@
 					className = 'class="' + className + '"';
 				}
 
-				message = message + '<span>' + this.getTimeStamp() + '</span> ';
+				message = message + '<span>' + App.getTimeStamp() + '</span> ';
 				message = '<blockquote ' + className + '>' + message + '</blockquote>';
 
 				logContainer.append(message);
@@ -49,30 +56,29 @@
 			},
 
 			error: function(message) {
-				this.log(message, 'error');
+				App.log(message, 'error');
 			},
 
 			warn: function(message) {
-				this.log(message, 'warn');
+				App.log(message, 'warn');
 			},
 
 			setStatus: function(message) {
-				this.panes.status.innerHTML = message;
-				$(this.panes.status).fadeIn();
+				App.panes.status.innerHTML = message;
+				$(App.panes.status).fadeIn();
 				setTimeout(function(){
 					$(App.panes.status).fadeOut();
 				}, 5000);
-				this.log(message);
+				App.log(message);
 			},
 
 			login: function() {
 				var username = App.editors.username.value,
-					password = App.editors.password.value,
-					self = this;
-
-				App.panes.loginError.innerHTML= '';
+					password = App.editors.password.value;
 
 				if(username, password) {
+					App.panes.loginError.innerHTML= '';
+
 					$.ajax({
 						type: "POST",
 						url: 'api/login',
@@ -91,6 +97,7 @@
 
 							App.panes.projects.innerHTML = newProjects;
 							$('#projects span').on('click', App.loadAll);
+							$(App.panes.profileIcon).css('background-image', 'url("' + data.avatar + '?s=18")');
 
 							App.loadProjects();
 						} else {
@@ -98,16 +105,49 @@
 							App.panes.loginError.innerHTML= data.message;
 						}
 					}).fail(function(data, response){
-						self.panes.loginError.innerHTML(data.message);
+						App.panes.loginError.innerHTML(data.message);
 					});
 				} else {
-					this.setStatus('ERROR: Cannot save unnamed project ');
+					App.setStatus('ERROR: Cannot save unnamed project ');
 				}
+
+				return false;
+			},
+
+			register: function() {
+				if(App.editors.newname.value) {
+					$.ajax({
+						type: "POST",
+						url: 'api/register',
+						data: {
+							newusername: App.editors.newusername.value,
+							newpassword: App.editors.newpassword.value,
+							newemail: App.editors.newemail.value,
+							newname: App.editors.newname.value,
+							newdescription: App.editors.newdescription.value,
+						},
+						dataType: 'JSON'
+					}).success(function(data){
+						if(data.status){
+							App.showDialog('#welcomeDialog');
+							App.editors.username.value = newusername;
+							App.editors.password.value = newpassword;
+							App.login();
+						} else {
+							App.panes.registerError.innerHTML= data.message;
+						}
+					}).fail(function(data, response){
+						App.panes.registerError.innerHTML= data.message;
+					});
+				} else {
+					App.setStatus('ERROR: Cannot register this user');
+				}
+
 				return false;
 			},
 
 			loadProjects: function() {
-				$(this.panes.overlay).fadeOut();
+				$(App.panes.overlay).fadeOut();
 			},
 
 			saveAll: function() {
@@ -125,7 +165,15 @@
 							}
 						},
 						dataType: 'JSON'
-					});
+					}).success(function(data){
+						if(data.status) {
+								App.setStatus('Project saved!');
+						} else {
+								App.setStatus('ERROR: ' + data.message + ' [' + App.editors.name.value + '].');
+						}
+					}).fail(function(data) {
+						App.setStatus('ERROR: Cannot save project [' + App.editors.name.value + '].');
+					});;
 				} else {
 					App.setStatus('ERROR: Cannot save unnamed project ');
 				}
@@ -230,56 +278,34 @@
 				App.panes.results.innerHTML = '';
 			},
 
-			runTest: function(testFunction, silent) {
-			    for(var index = 0; index < testCases.length; index++) {
-			        var ip = testCases[index],
-			            response = null;
-
-			        try{
-			            response = testFunction(ip);
-			        } catch(err) {
-			            response = 'ERROR';
-			        }
-
-			        if(!silent) {
-			            console.log('    [', response, ']', ip);
-			        }
-			    }
+			closeDialog: function(selector) {
+				if(selector) {
+					$(selector).fadeOut();
+				} else {
+					$('.overlay').fadeOut();
+				}
 			},
 
-			benchmark: function(method) {
-			  var author = null,
-			      start = +(new Date);
-
-			  method && method(function (callback) {
-			    var end = +(new Date);
-			    var difference = end - start;
-
-			    callback && callback(start, end, { ms: difference });
-			  });
-			},
-
-			clock: function(start, end, difference) {
-			    console.log('[' + author + '] ' + difference.ms + 'ms!');
+			showDialog: function(selector) {
+				$('.overlay .dialog:not('+selector+')').hide();
+				$(selector).show();
 			},
 
 			init: function() {
-				this.editors.name = $('#project')[0];
-				this.editors.username = $('#username')[0];
-				this.editors.password = $('#password')[0];
-				this.panes.loginError = $('#loginError')[0];
-
-				this.editors.username.focus();
+				App.editors.username.focus();
 
 				$('#loginForm').on('submit', App.login);
+				$('#registerForm').on('submit', App.register);
+
 				$('#popup').on('click', function(){
 					$(App.panes.status).fadeOut();
 				});
+
 				$('#projectsButton').on('click', function(){
 					$('#projects').slideToggle();
 				});
 
-				this.editors.javascript = CodeMirror.fromTextArea(this.panes.javascript, {
+				App.editors.javascript = CodeMirror.fromTextArea(App.panes.javascript, {
 				    lineNumbers: true,
     				mode: "javascript",
 					styleActiveLine: true,
@@ -287,7 +313,7 @@
 					theme: 'phoenix'
 				});
 
-				this.editors.json = CodeMirror.fromTextArea(this.panes.json, {
+				App.editors.json = CodeMirror.fromTextArea(App.panes.json, {
 				    lineNumbers: true,
     				mode: "javascript",
 					styleActiveLine: true,
@@ -295,7 +321,7 @@
 					theme: 'phoenix'
 				});
 
-				this.editors.test = CodeMirror.fromTextArea(this.panes.test, {
+				App.editors.test = CodeMirror.fromTextArea(App.panes.test, {
 				    lineNumbers: true,
     				mode: "javascript",
 					styleActiveLine: true,

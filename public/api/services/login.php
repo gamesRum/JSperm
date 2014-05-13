@@ -33,6 +33,8 @@
 
 					$result['name'] = $profile->name;
 					$result['github'] = $profile->github;
+					$result['email'] = $profile->email;
+					$result['avatar'] = 'http://www.gravatar.com/avatar/'.md5($profile->email);
 					$result['description'] = $profile->description;
 					$result['status'] = true;
 					$result['projects'] = $projectsList;

@@ -10,7 +10,7 @@
 	if(file_exists($serviceFile)) {
 		include($serviceFile);
 	} else {
-		$result['status'] = 'service not found! ['.$service.']';
+		$result['message'] = 'service not found! ['.$service.']';
 	}
 
 	header('Content-type: application/json');

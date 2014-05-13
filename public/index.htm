@@ -27,6 +27,7 @@
 				<button onclick="App.loadAll()">Load</button>
 				<button onclick="App.saveAll()">Save</button>
 				<button onclick="App.runJS()">Execute</button>
+				<button class="profile" id="profileIcon">adykto</button>
 			</div>
 		</div>
 		<div class="grid">
@@ -51,36 +52,50 @@
 			</div>
 		</div>
 		<div class="overlay" id="overlay">
-			<div class="dialog login">
+			<div class="dialog login" id="loginDialog">
 				<div class="title">Welcome to JSperm</div>
 				<div class="container">
 					<form id="loginForm">
 						<label>User name:</label>
 						<input class="wide" type="text" id="username" value="" placeholder="enter your username" maxlength="10" pattern="[a-zA-Z0-9]{5,10}" required />
 						<label>Password:</label>
-						<input class="wide" type="password" id="password" value="" placeholder="enter your password" maxlength="10" pattern="[a-zA-Z0-9]{5,10}" required />
+						<input class="wide" type="password" id="password" value="" placeholder="enter your password" maxlength="50" pattern="[a-zA-Z0-9]{5,50}" required />
 
 						<div class="error" id="loginError"></div>
-						<button>Login</button> or create a <span class="link">new account</span>
+						<button>Login</button> or <span class="link" onclick="App.showDialog('#registerDialog')">create</span> a new account.
 					</form>
 				</div>
 			</div>
-			<div class="dialog">
+			<div class="dialog" id="registerDialog">
 				<div class="title">Register a new user</div>
 				<div class="container">
 					<form id="registerForm">
 						<label>User name:</label>
 						<input class="wide" type="text" id="newusername" value="" placeholder="enter your username" maxlength="10" pattern="[a-zA-Z0-9]{5,10}" required />
 						<label>Password:</label>
-						<input class="wide" type="password" id="newpassword" value="" placeholder="enter your password" maxlength="10" pattern="[a-zA-Z0-9]{5,10}" required />
-						<label>Name:</label>
-						<input class="wide" type="text" id="newname" value="" placeholder="enter your real name" maxlength="30" pattern="[a-zA-Z0-9]{5,30}" required />
+						<input class="wide" type="password" id="newpassword" value="" placeholder="enter your password" maxlength="50" required />
 						<label>Email:</label>
 						<input class="wide" type="email" id="newemail" value="" placeholder="enter your email" maxlength="50" required />
+						<label>Real name:</label>
+						<input class="wide" type="text" id="newname" value="" placeholder="enter your real name" maxlength="30" pattern="[a-zA-Z0-9\s]{5,30}" required />
+						<label>A short description about you:</label>
+						<input class="wide" type="text" id="newdescription" value="" placeholder="enter your description" maxlength="80" required />
 
-						<div class="error" id="loginError"></div>
-						<button>Login</button> or create a <span class="link">new account</span>
+						<div class="error" id="registerError"></div>
+						<button>Register</button> or <span class="link" onclick="App.showDialog('#loginDialog')">back</span> to login form.
 					</form>
+				</div>
+			</div>
+			<div class="dialog" id="welcomeDialog">
+				<div class="title">Welcome to JSperm!</div>
+				<div class="container">
+					<p>
+						You are ready to start using JSperm, we don't send any mail to your account.
+					</p>
+					<p>
+						&nbsp;
+					</p>
+					<button onclick="App.closeDialog()">Dismiss</button>
 				</div>
 			</div>
 		</div>
