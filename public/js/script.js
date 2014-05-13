@@ -130,8 +130,8 @@
 					}).success(function(data){
 						if(data.status){
 							App.showDialog('#welcomeDialog');
-							App.editors.username.value = newusername;
-							App.editors.password.value = newpassword;
+							App.editors.username.value = newusername.value;
+							App.editors.password.value = newpassword.value;
 							App.login();
 						} else {
 							App.panes.registerError.innerHTML= data.message;
