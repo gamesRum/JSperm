@@ -8,16 +8,35 @@
 				javascript: $('#javascript')[0],
 				test: $('#test')[0],
 				json: $('#json')[0],
-				results: $('#results')[0]
+				results: $('#results')[0],
+				status: $('#popup')[0],
+				loginError: $('#loginError')[0],
+				registerError: $('#registerError')[0],
+				overlay: $('#overlay')[0],
+				projects: $('#projects')[0],
+				profileIcon: $('#profileIcon')[0]
 			},
+
 			editors: {
-				javascript: null
+				javascript: null,
+				test: null,
+				json: null,
+				name: $('#project')[0],
+				username: $('#username')[0],
+				password: $('#password')[0],
+				newusername: $('#newusername')[0],
+				newpassword: $('#newpassword')[0],
+				newemail: $('#newemail')[0],
+				newname: $('#newname')[0],
+				newdescription: $('#newdescription')[0]
 			},
+
 			getTimeStamp: function() {
 				return new Date().toLocaleString();
 			},
+
 			log: function(message, className) {
-				var logContainer = $(this.panes.results);
+				var logContainer = $(App.panes.results);
 
 				if(!message) {
 					message = "\n";
@@ -25,153 +44,290 @@
 
 				if(!className) {
 					className = '';
+				} else {
+					className = 'class="' + className + '"';
 				}
 
-				console.log(className);
-
-				message = message + '<span>' + this.getTimeStamp() + '</span> ';
-				message = '<blockquote class="' + className + '">' + message + '</blockquote>';
+				message = message + '<span>' + App.getTimeStamp() + '</span> ';
+				message = '<blockquote ' + className + '>' + message + '</blockquote>';
 
 				logContainer.append(message);
 				logContainer.scrollTop(logContainer.prop("scrollHeight"));
 			},
+
 			error: function(message) {
-				this.log(message, 'error');
+				App.log(message, 'error');
 			},
+
 			warn: function(message) {
-				this.log(message, 'warn');
+				App.log(message, 'warn');
 			},
+
+			setStatus: function(message) {
+				App.panes.status.innerHTML = message;
+				$(App.panes.status).fadeIn();
+				setTimeout(function(){
+					$(App.panes.status).fadeOut();
+				}, 5000);
+				App.log(message);
+			},
+
+			login: function() {
+				var username = App.editors.username.value,
+					password = App.editors.password.value;
+
+				if(username, password) {
+					App.panes.loginError.innerHTML= '';
+
+					$.ajax({
+						type: "POST",
+						url: 'api/login',
+						data: {
+							username: username,
+							password: password
+						},
+						dataType: 'JSON'
+					}).success(function(data){
+						if(data.status) {
+							var newProjects = '';
+
+							for(var index in data.projects) {
+								newProjects += '<span class="link">' + data.projects[index] + '</span>';
+							}
+
+							App.panes.projects.innerHTML = newProjects;
+							$('#projects span').on('click', App.loadAll);
+							$(App.panes.profileIcon).css('background-image', 'url("' + data.avatar + '?s=18")');
+
+							App.loadProjects();
+						} else {
+							App.editors.password.value = '';
+							App.panes.loginError.innerHTML= data.message;
+						}
+					}).fail(function(data, response){
+						App.panes.loginError.innerHTML(data.message);
+					});
+				} else {
+					App.setStatus('ERROR: Cannot save unnamed project ');
+				}
+
+				return false;
+			},
+
+			register: function() {
+				if(App.editors.newname.value) {
+					$.ajax({
+						type: "POST",
+						url: 'api/register',
+						data: {
+							newusername: App.editors.newusername.value,
+							newpassword: App.editors.newpassword.value,
+							newemail: App.editors.newemail.value,
+							newname: App.editors.newname.value,
+							newdescription: App.editors.newdescription.value,
+						},
+						dataType: 'JSON'
+					}).success(function(data){
+						if(data.status){
+							App.showDialog('#welcomeDialog');
+							App.editors.username.value = newusername.value;
+							App.editors.password.value = newpassword.value;
+							App.login();
+						} else {
+							App.panes.registerError.innerHTML= data.message;
+						}
+					}).fail(function(data, response){
+						App.panes.registerError.innerHTML= data.message;
+					});
+				} else {
+					App.setStatus('ERROR: Cannot register this user');
+				}
+
+				return false;
+			},
+
+			loadProjects: function() {
+				$(App.panes.overlay).fadeOut();
+			},
+
+			saveAll: function() {
+				if(App.editors.name.value) {
+					$.ajax({
+						type: "POST",
+						url: 'api/save',
+						data: {
+							username: App.editors.username.value,
+							project: App.editors.name.value,
+							files: {
+								'javascript.js': App.editors.javascript.getValue(),
+								'test.js': App.editors.test.getValue(),
+								'data.json': App.editors.json.getValue()
+							}
+						},
+						dataType: 'JSON'
+					}).success(function(data){
+						if(data.status) {
+								App.setStatus('Project saved!');
+						} else {
+								App.setStatus('ERROR: ' + data.message + ' [' + App.editors.name.value + '].');
+						}
+					}).fail(function(data) {
+						App.setStatus('ERROR: Cannot save project [' + App.editors.name.value + '].');
+					});;
+				} else {
+					App.setStatus('ERROR: Cannot save unnamed project ');
+				}
+			},
+
+			loadAll: function(event) {
+				$('#projects').slideUp();
+
+				if(event) {
+					App.editors.name.value = event.target.innerHTML;
+				}
+
+				if(App.editors.name.value) {
+					$.ajax({
+						type: "POST",
+						url: 'api/load',
+						data: {
+							username: App.editors.username.value,
+							project: App.editors.name.value
+						},
+						success: function(data){
+							if(data.status) {
+								App.editors.name.value = data.name;
+								App.editors.javascript.setValue(data.files['javascript.js']);
+								App.editors.test.setValue(data.files['test.js']);
+								App.editors.json.setValue(data.files['data.json']);
+								App.log('[LOAD] ' + data.message);
+								App.setStatus('Project loaded!');
+							} else {
+								App.setStatus('ERROR: ' + data.message + ' [' + App.editors.name.value + '].');
+							}
+						},
+						dataType: 'JSON'
+					}).fail(function(data) {
+						App.setStatus('ERROR: Cannot open project [' + App.editors.name.value + '].');
+					});
+				} else {
+					App.setStatus('ERROR: Cannot open an empty project.');
+				}
+			},
+
 			runJS: function() {
-				var source = this.editors.javascript.getValue();
+				if(App.editors.name.value) {
+					$.ajax({
+						type: "POST",
+						url: 'api/execute',
+						data: {
+							username: App.editors.username.value,
+							project: App.editors.name.value
+						},
+						success: function(data){
+							var log = '';
+							App.editors.name.value = data.name;
 
-				try {
-					this.log('[EXEC] ' + JSON.stringify(eval(source)));
-				} catch (e) {
-					this.error('[EXEC] ' + e.message);
+							for(var key in data.response) {
+								if (data.response.hasOwnProperty(key)) {
+									var output = data.response[key].output,
+										profiling = data.response[key].profiling,
+										exitCode = data.response[key].exit?'error':'';
+
+									log += '<br />[EXEC] ' + key;
+									log += '<div class="code ' + exitCode + '">';
+
+									if(typeof output === 'string' && output.length) {
+										log += output;
+									}
+
+									log += '</div>';
+								}
+							}
+
+							App.log(log);
+						},
+						dataType: 'JSON'
+					});
+				} else {
+					App.setStatus('ERROR: Nothing to be run here!');
 				}
 			},
-			runBenchmark: function() {
-				var source = this.editors.javascript.getValue();
 
-				try {
-					this.log('[BNCH] run!.');
-				} catch (e) {
-					this.error('[BNCH] ' + e.message);
-				}
-			},
 			testRun: function() {
-				var source = this.editors.test.getValue();
+				var source = App.editors.test.getValue();
 
 				try {
-					this.log('[JSON] ' + JSON.stringify(source));
+					App.log('[JSON] ' + JSON.stringify(source));
 				} catch (e) {
-					this.error('[TEST] ' + e.message);
+					App.error('[TEST] ' + e.message);
 				}
 			},
+
 			validateJSON: function() {
-				var source = this.editors.json.getValue();
+				var source = App.editors.json.getValue();
 
 				try {
-					this.log('[JSON] ' + JSON.stringify(JSON.parse(source)));
+					App.log('[JSON] ' + JSON.stringify(JSON.parse(source)));
 				} catch (e) {
-					this.error('[JSON] ' + e.message);
+					App.error('[JSON] ' + e.message);
 				}
 			},
+
 			clearResults: function() {
-				$('#results')[0].value = '';
+				App.panes.results.innerHTML = '';
 			},
-			runTest: function(testFunction, silent) {
-			    for(var index = 0; index < testCases.length; index++) {
-			        var ip = testCases[index],
-			            response = null;
 
-			        try{
-			            response = testFunction(ip);
-			        } catch(err) {
-			            response = 'ERROR';
-			        }
-
-			        if(!silent) {
-			            console.log('    [', response, ']', ip);
-			        }
-			    }
+			closeDialog: function(selector) {
+				if(selector) {
+					$(selector).fadeOut();
+				} else {
+					$('.overlay').fadeOut();
+				}
 			},
-			benchmark: function(method) {
-			  var author = null,
-			      start = +(new Date);
 
-			  method && method(function (callback) {
-			    var end = +(new Date);
-			    var difference = end - start;
-
-			    callback && callback(start, end, { ms: difference });
-			  });
+			showDialog: function(selector) {
+				$('.overlay .dialog:not('+selector+')').hide();
+				$(selector).show();
 			},
-			clock: function(start, end, difference) {
-			    console.log('[' + author + '] ' + difference.ms + 'ms!');
-			},
-			load: function(name) {
-				var self = this;
 
-				$.ajax({
-					url:'samples/' + name + '/javascript.js',
-					dataType: 'html'
-				})
-					.success(function(data){
-						self.editors.javascript.setValue(data);
-					})
-					.fail(function() {
-						self.log('Error loading javascript file!');
-					});
-
-				$.ajax({
-					url:'samples/' + name + '/json.json',
-					dataType: 'html'
-				})
-					.success(function(data){
-						self.editors.json.setValue(data);
-					})
-					.fail(function() {
-						self.log('Error loading json file!');
-					});
-
-				$.ajax({
-					url:'samples/' + name + '/test.js',
-					dataType: 'html'
-				})
-					.success(function(data){
-						self.editors.test.setValue(data);
-					})
-					.fail(function() {
-						self.log('Error loading test file!');
-					});
-			},
 			init: function() {
-				this.editors.javascript = CodeMirror.fromTextArea(this.panes.javascript, {
+				App.editors.username.focus();
+
+				$('#loginForm').on('submit', App.login);
+				$('#registerForm').on('submit', App.register);
+
+				$('#popup').on('click', function(){
+					$(App.panes.status).fadeOut();
+				});
+
+				$('#projectsButton').on('click', function(){
+					$('#projects').slideToggle();
+				});
+
+				App.editors.javascript = CodeMirror.fromTextArea(App.panes.javascript, {
 				    lineNumbers: true,
     				mode: "javascript",
 					styleActiveLine: true,
 					matchBrackets: true,
-					theme: 'mbo'
+					theme: 'phoenix'
 				});
 
-				this.editors.json = CodeMirror.fromTextArea(this.panes.json, {
+				App.editors.json = CodeMirror.fromTextArea(App.panes.json, {
 				    lineNumbers: true,
     				mode: "javascript",
 					styleActiveLine: true,
 					matchBrackets: true,
-					theme: 'mbo'
+					theme: 'phoenix'
 				});
 
-				this.editors.test = CodeMirror.fromTextArea(this.panes.test, {
+				App.editors.test = CodeMirror.fromTextArea(App.panes.test, {
 				    lineNumbers: true,
     				mode: "javascript",
 					styleActiveLine: true,
 					matchBrackets: true,
-					theme: 'mbo'
+					theme: 'phoenix'
 				});
-
-				this.load('start');
 			}
 		};
 

@@ -1,4 +1,9 @@
 /node_modules/
 npm-debug.log
+<<<<<<< HEAD
 lib/config/env.json
 lib/config/auth_twitter.json
+=======
+/public/components/
+/sandbox/*
+>>>>>>> frontend

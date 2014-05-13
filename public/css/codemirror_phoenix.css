@@ -1,0 +1,37 @@
+/* Based on mbonaci's Brackets mbo theme */
+
+.cm-s-phoenix.CodeMirror {background: #191919; color: #AAA; font-size:11px; line-height: 12px; height: 100%;}
+.cm-s-phoenix div.CodeMirror-selected {background: #333 !important;}
+.cm-s-phoenix .CodeMirror-gutters {background: #111; border: 0; padding-right: 10px;}
+.cm-s-phoenix .CodeMirror-linenumber {color: #555;}
+.cm-s-phoenix .CodeMirror-cursor {border-left: 1px solid #ffffec !important;}
+
+.cm-s-phoenix span.cm-comment {color: #555;}
+.cm-s-phoenix span.cm-atom {color: #87bf19;}
+.cm-s-phoenix span.cm-number {color: #87bf19;}
+
+.cm-s-phoenix span.cm-property, .cm-s-phoenix span.cm-attribute {color: #555;}
+.cm-s-phoenix span.cm-keyword {color: #dedede;}
+.cm-s-phoenix span.cm-string {color: #9fb785;}
+
+.cm-s-phoenix span.cm-variable {color: #888;}
+.cm-s-phoenix span.cm-variable-2 {color: #65910f;}
+.cm-s-phoenix span.cm-def {color: #65910f;}
+.cm-s-phoenix span.cm-bracket {color: #fffffc; font-weight: bold;}
+.cm-s-phoenix span.cm-tag {color: #9ddfe9;}
+.cm-s-phoenix span.cm-link {color: #f54b07;}
+.cm-s-phoenix span.cm-error {background: #636363; color: #ffffec;}
+
+.cm-s-phoenix .CodeMirror-activeline-background {background: #222 !important;}
+.cm-s-phoenix .CodeMirror-matchingbracket {
+  text-decoration: underline;
+  color: #fff !important;
+ }
+
+.cm-s-phoenix .CodeMirror-matchingtag {background: #4e4e4e;}
+
+.cm-s-phoenix span.cm-searching {
+  background-color: none;
+  background: none;
+  box-shadow: 0 0 0 1px #ffffec;
+}

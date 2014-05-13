@@ -1,0 +1,9 @@
+{
+  "name" : "jsperm",
+  "description": "Javascript performance tester",
+  "version": "0.1",
+  "dependencies" : {
+  	"codemirror": "latest",
+    "jquery" : "latest"
+  }
+}

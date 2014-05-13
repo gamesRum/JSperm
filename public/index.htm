@@ -2,36 +2,44 @@
 <html>
 	<head>
 		<title>JSperm</title>
+		<meta charset="utf-8">
+		<link rel="icon" type="image/png" href="img/favicon.png">
 		<link rel="stylesheet" type="text/css" href="css/style.css">
-		<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-		<link rel="stylesheet" href="js/codemirror/lib/codemirror.css">
-		<link rel="stylesheet" href="js/codemirror/theme/phoenix.css">
-		<script type="text/javascript" src="js/codemirror/lib/codemirror.js"></script>
-		<script src="js/codemirror/mode/javascript/javascript.js"></script>
-		<script src="js/codemirror/addon/selection/active-line.js"></script>
-		<script src="js/codemirror/addon/edit/matchbrackets.js"></script>
+		<link rel="stylesheet" href="components/codemirror/lib/codemirror.css">
+		<link rel="stylesheet" href="css/codemirror_phoenix.css">
+		<script type="text/javascript" src="components/jquery/dist/jquery.min.js"></script>
+		<script type="text/javascript" src="components//codemirror/lib/codemirror.js"></script>
+		<script src="components/codemirror/mode/javascript/javascript.js"></script>
+		<script src="components/codemirror/addon/selection/active-line.js"></script>
+		<script src="components/codemirror/addon/edit/matchbrackets.js"></script>
 	</head>
 	<body>
+		<div class="popup" id="popup">Cannot save unnnamed project!</div>
+		<div class="menubar toolbar">
+			<span class="title">JSperm</span>
+			<span class="label">Project:</span>
+			<div class="dropdown">
+				<input class="input" id="project" value="" placeholder="enter project name"/>
+				<span class="select" id="projectsButton">▾</span>
+				<div class="options" id="projects"></div>
+			</div>
+			<div class="toolbar">
+				<button onclick="App.loadAll()">Load</button>
+				<button onclick="App.saveAll()">Save</button>
+				<button onclick="App.runJS()">Execute</button>
+				<button class="profile" id="profileIcon">adykto</button>
+			</div>
+		</div>
 		<div class="grid">
 			<div class="cell">
-				<div class="toolbar">
-					<button onclick="App.runJS()">Execute</button>
-					<button onclick="App.runBenchmark()">Benchmark</button>
-				</div>
 				<h2>Javascript</h2>
 				<textarea id="javascript"></textarea>
 			</div>
 			<div class="cell">
-				<div class="toolbar">
-					<button onclick="App.validateJSON()">Validate</button>
-				</div>
 				<h2>JSON</h2>
 				<textarea id="json"></textarea>
 			</div>
 			<div class="cell">
-				<div class="toolbar">
-					<button onclick="App.testRun()">Run</button>
-				</div>
 				<h2>Test</h2>
 				<textarea id="test"></textarea>
 			</div>
@@ -41,6 +49,54 @@
 				</div>
 				<h2>Results</h2>
 				<div class="log" id="results"></div>
+			</div>
+		</div>
+		<div class="overlay" id="overlay">
+			<div class="dialog login" id="loginDialog">
+				<div class="title">Welcome to JSperm</div>
+				<div class="container">
+					<form id="loginForm">
+						<label>User name:</label>
+						<input class="wide" type="text" id="username" value="" placeholder="enter your username" maxlength="10" pattern="[a-zA-Z0-9]{5,10}" required />
+						<label>Password:</label>
+						<input class="wide" type="password" id="password" value="" placeholder="enter your password" maxlength="50" pattern="[a-zA-Z0-9]{5,50}" required />
+
+						<div class="error" id="loginError"></div>
+						<button>Login</button> or <span class="link" onclick="App.showDialog('#registerDialog')">create</span> a new account.
+					</form>
+				</div>
+			</div>
+			<div class="dialog" id="registerDialog">
+				<div class="title">Register a new user</div>
+				<div class="container">
+					<form id="registerForm">
+						<label>User name:</label>
+						<input class="wide" type="text" id="newusername" value="" placeholder="enter your username" maxlength="10" pattern="[a-zA-Z0-9]{5,10}" required />
+						<label>Password:</label>
+						<input class="wide" type="password" id="newpassword" value="" placeholder="enter your password" maxlength="50" required />
+						<label>Email:</label>
+						<input class="wide" type="email" id="newemail" value="" placeholder="enter your email" maxlength="50" required />
+						<label>Real name:</label>
+						<input class="wide" type="text" id="newname" value="" placeholder="enter your real name" maxlength="30" pattern="[a-zA-Z0-9\s]{5,30}" required />
+						<label>A short description about you:</label>
+						<input class="wide" type="text" id="newdescription" value="" placeholder="enter your description" maxlength="80" required />
+
+						<div class="error" id="registerError"></div>
+						<button>Register</button> or <span class="link" onclick="App.showDialog('#loginDialog')">back</span> to login form.
+					</form>
+				</div>
+			</div>
+			<div class="dialog" id="welcomeDialog">
+				<div class="title">Welcome to JSperm!</div>
+				<div class="container">
+					<p>
+						You are ready to start using JSperm, we don't send any mail to your account.
+					</p>
+					<p>
+						&nbsp;
+					</p>
+					<button onclick="App.closeDialog()">Dismiss</button>
+				</div>
 			</div>
 		</div>
 	</body>
