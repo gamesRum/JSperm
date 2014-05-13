@@ -251,7 +251,7 @@
 		}
 
 			.dialog {
-				background: #dedede;
+				background: #dedede url('../img/icon.png') right center no-repeat;
 				box-shadow: 0 0 15px #000;
 				max-height: 50%;
 				margin: 15% 25%;
@@ -268,7 +268,7 @@
 				}
 
 					.dialog form {
-						margin: 0 auto;
+						margin: 0 10px;
 						max-width: 300px;
 					}
 
