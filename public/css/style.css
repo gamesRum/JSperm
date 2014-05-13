@@ -77,10 +77,11 @@
 				}
 
 			.menubar .title {
+				background: url('../img/favicon.png') left center no-repeat;
 				color: #fff;
 				font-size: 16px;
 				font-weight: bold;
-				padding: 0 30px 0 2px;
+				padding: 0 10px 0 35px;
 			}
 
 			.menubar .toolbar {
@@ -97,7 +98,7 @@
 			position: absolute;
 			clear: none;
 			top: 1px;
-			left: 142px;
+			left: 155px;
 		}
 
 			.options {
@@ -251,12 +252,18 @@
 		}
 
 			.dialog {
-				background: #dedede url('../img/icon.png') right center no-repeat;
+				background: #dedede;
 				box-shadow: 0 0 15px #000;
+				display: none;
 				max-height: 50%;
 				margin: 15% 25%;
 				width: 50%;
 			}
+
+				.login {
+					background: #dedede url('../img/icon.png') right center no-repeat;
+					display: block;
+				}
 
 				.dialog .title {
 					background: #000;
@@ -268,6 +275,7 @@
 				}
 
 					.dialog form {
+						color: #888;
 						margin: 0 10px;
 						max-width: 300px;
 					}

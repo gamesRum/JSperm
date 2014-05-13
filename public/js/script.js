@@ -62,6 +62,7 @@
 				setTimeout(function(){
 					$(App.panes.status).fadeOut();
 				}, 5000);
+				this.log(message);
 			},
 
 			login: function() {

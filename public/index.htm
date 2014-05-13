@@ -51,7 +51,7 @@
 			</div>
 		</div>
 		<div class="overlay" id="overlay">
-			<div class="dialog">
+			<div class="dialog login">
 				<div class="title">Welcome to JSperm</div>
 				<div class="container">
 					<form id="loginForm">
@@ -59,6 +59,24 @@
 						<input class="wide" type="text" id="username" value="" placeholder="enter your username" maxlength="10" pattern="[a-zA-Z0-9]{5,10}" required />
 						<label>Password:</label>
 						<input class="wide" type="password" id="password" value="" placeholder="enter your password" maxlength="10" pattern="[a-zA-Z0-9]{5,10}" required />
+
+						<div class="error" id="loginError"></div>
+						<button>Login</button> or create a <span class="link">new account</span>
+					</form>
+				</div>
+			</div>
+			<div class="dialog">
+				<div class="title">Register a new user</div>
+				<div class="container">
+					<form id="registerForm">
+						<label>User name:</label>
+						<input class="wide" type="text" id="newusername" value="" placeholder="enter your username" maxlength="10" pattern="[a-zA-Z0-9]{5,10}" required />
+						<label>Password:</label>
+						<input class="wide" type="password" id="newpassword" value="" placeholder="enter your password" maxlength="10" pattern="[a-zA-Z0-9]{5,10}" required />
+						<label>Name:</label>
+						<input class="wide" type="text" id="newname" value="" placeholder="enter your real name" maxlength="30" pattern="[a-zA-Z0-9]{5,30}" required />
+						<label>Email:</label>
+						<input class="wide" type="email" id="newemail" value="" placeholder="enter your email" maxlength="50" required />
 
 						<div class="error" id="loginError"></div>
 						<button>Login</button> or create a <span class="link">new account</span>
